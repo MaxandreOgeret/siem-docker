@@ -1,0 +1,36 @@
+web:
+    image: nginx:1.13.5
+    ports:
+        - "80:80"
+    volumes:
+        - ./html:/html
+        - ./site.conf:/etc/nginx/conf.d/default.conf
+    links:
+        - php
+php:
+    build: './php'
+    volumes:
+        - ./html:/html
+    links:
+       - mysql
+       - mail
+mysql:
+    image: mysql:5.7
+    ports:
+        - "3306:3306"
+    volumes:
+        - ./mysql:/var/lib/mysql
+    environment:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: symfony
+mail:
+    image: namshi/smtp
+    ports:
+        - "25:25"
+    environment:
+        MAILNAME: SIEM-MAIL
+        DISABLE_IPV6: 1
+        SMARTHOST_PORT: 587
+        SMARTHOST_USER: user
+        SMARTHOST_PASSWORD: password
+
